@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Page Not Found</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="error-page">
+        <div class="container">
+            <h1 class="glitch-text">500</h1>
+            <p class="lead">Oops! Server encountered an unexpected issue.</p>
+            <a href="/" class="btn btn-primary">Go Back Home</a>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #121212;
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .error-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            background: #121212
+        }
+
+        .error-page .container {
+            text-align: center;
+        }
+
+        .error-page h1 {
+            font-size: 8rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .error-page .lead {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .error-page .btn {
+            text-decoration: none;
+            color: var(--text-color);
+            background: var(--secondary-color);
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            border: 2px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .error-page .btn:hover {
+            background: transparent;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .error-page h1 {
+                font-size: 6rem;
+            }
+
+            .error-page .lead {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</body>
+</html>

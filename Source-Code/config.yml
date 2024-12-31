@@ -1,0 +1,9 @@
+License:
+ key: "" #license key
+Server:
+  Name: "Hex Web" #server name
+  Port: 3100  #server port
+Email:
+  SendGridToken: "" #sendgrid token
+  fromEmail: "" #from email
+  ToEmail: "" #to email

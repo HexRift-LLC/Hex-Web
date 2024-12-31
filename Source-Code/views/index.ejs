@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Experience the future of web design with our modern solutions">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="glitch-text">Welcome to <%= title %></h1>
+                <p class="lead">Pushing the boundaries of web development</p>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">About Us</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Our Vision</h3>
+                        <p>Creating cutting-edge digital experiences that define the future of the web.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Our Mission</h3>
+                        <p>Delivering innovative solutions that transform ideas into powerful digital realities.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services-section">
+            <div class="container">
+                <h2 class="section-title">Our Services</h2>
+                <div class="grid-3">
+                    <div class="card">
+                        <i class="fas fa-code"></i>
+                        <h3>Web Development</h3>
+                        <p>Custom solutions built with cutting-edge technologies.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Responsive Design</h3>
+                        <p>Seamless experiences across all devices.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Performance</h3>
+                        <p>Lightning-fast loading and optimal user experience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <form class="contact-form" action="/submit-form" method="POST">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+    
+    <script>
+        const form = document.querySelector('.contact-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent page reload
+            const formData = new FormData(form);
+    
+            try {
+                const response = await fetch('/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(formData.entries())),
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message); // Success message
+                    form.reset(); // Clear form fields
+                } else {
+                    alert(result.error); // Error message
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+    
+
+    <%- include('partials/footer') %>
+    <script src="/js/main.js"></script>
+</body>
+</html>
