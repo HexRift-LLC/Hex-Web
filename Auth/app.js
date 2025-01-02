@@ -80,15 +80,49 @@ async function startServer() {
             }
         });
 
+        app.get('/store', (req, res) => {
+            // Pass the title and products to the EJS template
+            res.render('store', {
+                title: config.Server.Name,
+                products: config.Store.Products // Pass the products from the YAML file
+            });
+            res.on('finish', () => {
+                res.write('<script>window.scrollTo({top: 0, behavior: "smooth"});</script>');
+            });
+        });
+        // Handle form submission
+        app.post('/submit-form', async (req, res) => {
+            const { name, email, message } = req.body;
+
+            if (!name || !email || !message) {
+                return res.status(400).json({ error: 'All fields are required' });
+            }
+
+            const msg = {
+                to: config.Email.ToEmail, // Replace with your email address
+                from: config.Email.fromEmail, // Replace with your verified SendGrid sender email
+                subject: `New Contact Form Submission from ${name}`,
+                text: `You have received a new message from ${name} (${email}):\n\n${message}`,
+            };
+
+            try {
+                await sgMail.send(msg);
+                res.status(200).json({ message: 'Email sent successfully!' });
+            } catch (error) {
+                console.error('Error sending email:', error.response ? error.response.body : error);
+                res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+            }
+        });
+
         // 404 handler
         app.use((req, res) => {
-            res.status(404).render('error-404');
+            res.status(404).render('error-404', { title: config.Server.Name });
         });
 
         // Error handler
         app.use((err, req, res, next) => {
             console.error(err.stack);
-            res.status(500).render('error-500');
+            res.status(500).render('error-500', { title: config.Server.Name });
         });
 
         app.listen(PORT, () => {

@@ -34,6 +34,16 @@ async function startServer() {
             res.render('index', { title: config.Server.Name });
         });
 
+        app.get('/store', (req, res) => {
+            // Pass the title and products to the EJS template
+            res.render('store', {
+                title: config.Server.Name,
+                products: config.Store.Products // Pass the products from the YAML file
+            });
+            res.on('finish', () => {
+                res.write('<script>window.scrollTo({top: 0, behavior: "smooth"});</script>');
+            });
+        });
         // Handle form submission
         app.post('/submit-form', async (req, res) => {
             const { name, email, message } = req.body;
@@ -60,13 +70,13 @@ async function startServer() {
 
         // 404 handler
         app.use((req, res) => {
-            res.status(404).render('error-404');
+            res.status(404).render('error-404', { title: config.Server.Name });
         });
 
         // Error handler
         app.use((err, req, res, next) => {
             console.error(err.stack);
-            res.status(500).render('error-500');
+            res.status(500).render('error-500', { title: config.Server.Name });
         });
 
         app.listen(PORT, () => {

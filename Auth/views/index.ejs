@@ -3,110 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Experience the future of web design with our modern solutions">
+    <meta name="description" content="Leading the future of web innovation">
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 <body>
     <%- include('partials/header') %>
 
     <main>
-        <section class="hero">
-            <div class="container">
-                <h1 class="glitch-text">Welcome to <%= title %></h1>
-                <p class="lead">Pushing the boundaries of web development</p>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="text-gradient"><%= title %></h1>
+                <p class="lead">Shaping Tomorrow's Digital Landscape</p>
+                <a href="#services" class="btn-primary">Explore Services</a>
             </div>
         </section>
 
-        <section id="about" class="about-section">
+        <section id="about" class="section">
             <div class="container">
-                <h2 class="section-title">About Us</h2>
-                <div class="grid-2">
+                <h2 class="text-gradient">Our Vision</h2>
+                <div class="grid grid-2">
                     <div class="card">
-                        <h3>Our Vision</h3>
-                        <p>Creating cutting-edge digital experiences that define the future of the web.</p>
-                    </div>
-                    <div class="card">
-                        <h3>Our Mission</h3>
-                        <p>Delivering innovative solutions that transform ideas into powerful digital realities.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="services-section">
-            <div class="container">
-                <h2 class="section-title">Our Services</h2>
-                <div class="grid-3">
-                    <div class="card">
-                        <i class="fas fa-code"></i>
-                        <h3>Web Development</h3>
-                        <p>Custom solutions built with cutting-edge technologies.</p>
-                    </div>
-                    <div class="card">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>Responsive Design</h3>
-                        <p>Seamless experiences across all devices.</p>
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Innovation First</h3>
+                        <p>Pioneering digital solutions that define industry standards.</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-rocket"></i>
-                        <h3>Performance</h3>
-                        <p>Lightning-fast loading and optimal user experience.</p>
+                        <h3>Future Ready</h3>
+                        <p>Building tomorrow's technology with today's expertise.</p>
                     </div>
                 </div>
             </div>
         </section>
-    </main>
 
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2 class="section-title">Contact Us</h2>
-            <form class="contact-form" action="/submit-form" method="POST">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+        <section id="services" class="section">
+            <div class="container">
+                <h2 class="text-gradient">Services</h2>
+                <div class="grid grid-3">
+                    <div class="card">
+                        <i class="fas fa-code"></i>
+                        <h3>Development</h3>
+                        <p>Cutting-edge web solutions</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>Design</h3>
+                        <p>Stunning visual experiences</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-server"></i>
+                        <h3>Infrastructure</h3>
+                        <p>Robust technical architecture</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
-        </div>
-    </section>
-    
-    <script>
-        const form = document.querySelector('.contact-form');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent page reload
-            const formData = new FormData(form);
-    
-            try {
-                const response = await fetch('/submit-form', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(Object.fromEntries(formData.entries())),
-                });
-    
-                const result = await response.json();
-                if (response.ok) {
-                    alert(result.message); // Success message
-                    form.reset(); // Clear form fields
-                } else {
-                    alert(result.error); // Error message
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-            }
-        });
-    </script>
-    
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="text-gradient">Get In Touch</h2>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
 
     <%- include('partials/footer') %>
     <script src="/js/main.js"></script>

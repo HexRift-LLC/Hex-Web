@@ -7,3 +7,17 @@ Email:
   SendGridToken: "" #sendgrid token
   fromEmail: "" #from email
   ToEmail: "" #to email
+Store:
+  Products:
+    - name: "Hex AI"
+      price: 10.99
+      image: "/Store/Product.png"
+      link: "https://hexmodz.com/"
+    - name: "Vortex Engine"
+      price: 15.00
+      image: "/Store/Product.png"
+      link: "https://hexmodz.com/"
+    - name: "Server Boost"
+      price: 20.00
+      image: "/Store/Product.png"
+      link: "https://hexmodz.com/"
