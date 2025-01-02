@@ -1,8 +1,10 @@
-const axios = require('axios');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const yaml = require('js-yaml');
+const { EmbedBuilder, WebhookClient } = require('discord.js');
 const fs = require('fs');
 const colors = require('colors');
 
+// Configuration Management
 class ConfigManager {
     static #instance;
     #config;
@@ -28,53 +30,142 @@ class ConfigManager {
     }
 }
 
-async function Auth() {
-    const config = ConfigManager.getInstance();
-    
-    try {
-        const url = 'https://api.hexmodz.com/api/client';
-        const licensekey = config.get('License.key');
-        const product = 'Hex-Web';
-        const api_key = '^h&L0d&2aq0d41#uRTMpHmX&FK2HU!gt95oF7jpez$gbP%!&1!BrqBg3qp#k*1@2';
-        const hwid = 'PC_IDENTIFIER'; // Using Discord ID as HWID
+// Webhook Manager
+class WebhookManager {
+    static #instance;
+    #webhook;
 
-        const response = await axios.post(
-            url,
-            {
-                licensekey,
-                product,
-                hwid
+    constructor() {
+        const webhookUrl = 'https://discord.com/api/webhooks/1323946852097458196/Rt13PpQ0YFRZhJhTFlZ_7uKeHjiK1Tfgd6R3kMqpdHh86tOGXoBP4wSHqVYMpWUVCiJV';
+        this.#webhook = new WebhookClient({ url: webhookUrl });
+    }
+
+    static getInstance() {
+        if (!WebhookManager.#instance) {
+            WebhookManager.#instance = new WebhookManager();
+        }
+        return WebhookManager.#instance;
+    }
+
+    async sendLog(status, color, fields, options = {}) {
+        try {
+            const embed = new EmbedBuilder()
+                .addFields(fields)
+                .setColor(color)
+                .setThumbnail('https://www.hexmodz.com/Logo-t.png')
+                .setFooter({
+                    iconURL: 'https://www.hexmodz.com/Logo-t.png',
+                    text: '© 2024 - 2025 Hex Modz',
+                })
+                .setTimestamp();
+
+            if (options.title) embed.setTitle(options.title);
+            if (options.description) embed.setDescription(options.description);
+
+            await this.#webhook.send({ embeds: [embed] });
+        } catch (error) {
+            console.error('[WEBHOOK]'.brightRed, 'Failed to send webhook:', error);
+        }
+    }
+}
+
+// Auth Client
+class AuthClient {
+    #config;
+    #webhookManager;
+
+    constructor() {
+        this.#config = ConfigManager.getInstance();
+        this.#webhookManager = WebhookManager.getInstance();
+    }
+
+    async validateLicense() {
+        const PRODUCT_ID = '38';
+        const licenseKey = this.#config.get('Auth.license');
+        const serverUrl = `https://api.hexmodz.com/api/check/${PRODUCT_ID}`;
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': licenseKey,
             },
-            { headers: { Authorization: api_key }}
+        };
+
+        try {
+            console.log('[AUTH]'.brightYellow, 'Sending authentication request...');
+            const response = await fetch(serverUrl, options);
+
+            if (!response.ok) {
+                await this.#handleAuthError(PRODUCT_ID, response.statusText);
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Updated condition to match the actual response
+            if (data.status === 'AUTHORISED' && data.pass === true) {
+                await this.#handleSuccessfulAuth(PRODUCT_ID, data.details);
+                return true;
+            } else {
+                await this.#handleFailedAuth(PRODUCT_ID, data.details || 'License validation failed');
+                throw new Error(data.details || 'License validation failed');
+            }
+        } catch (error) {
+            console.error('[AUTH]'.brightRed, 'Authorization error:', error.message);
+            await this.#handleAuthError(PRODUCT_ID, error.message);
+            throw error;
+        }
+    }
+
+    async #handleSuccessfulAuth(productId, details) {
+        await this.#webhookManager.sendLog(
+            'Authorization Successful',
+            '#00FF00',
+            [
+                { name: 'Status', value: 'Successful', inline: true },
+                { name: 'Product', value: "Hex Web", inline: true },
+                { name: 'Details', value: details, inline: true },
+            ],
+            { title: 'Authentication Success', description: 'Hex Web successfully authenticated' }
         );
+    }
 
-        if (!response.data.status_code || !response.data.status_id) {
-            console.log("――――――――――――――――――――――――――――――――――――");
-            console.log('\x1b[31m%s\x1b[0m', 'Your license key is invalid!');
-            console.log('\x1b[31m%s\x1b[0m', 'Create a ticket in our discord server to get one.');
-            console.log("――――――――――――――――――――――――――――――――――――");
-            return process.exit(1);
-        }
+    async #handleFailedAuth(productId, reason) {
+        await this.#webhookManager.sendLog(
+            'Authorization Failed',
+            '#FF0000',
+            [
+                { name: 'Status', value: 'Failed', inline: true },
+                { name: 'Product', value: "Hex Web", inline: true },
+                { name: 'Reason', value: reason, inline: true },
+            ],
+            { title: 'Authentication Failure', description: 'Hex Web authentication failed' }
+        );
+    }
 
-        if (response.data.status_overview !== "success") {
-            console.log("――――――――――――――――――――――――――――――――――――");
-            console.log('\x1b[31m%s\x1b[0m', 'Your license key is invalid!');
-            console.log('\x1b[31m%s\x1b[0m', 'Create a ticket in our discord server to get one.');
-            console.log("――――――――――――――――――――――――――――――――――――");
-            return process.exit(1);
-        }
+    async #handleAuthError(productId, error) {
+        await this.#webhookManager.sendLog(
+            'Authorization Error',
+            '#FF0000',
+            [
+                { name: 'Status', value: 'Error', inline: true },
+                { name: 'Product', value: "Hex Web", inline: true },
+                { name: 'Error Details', value: error, inline: true },
+            ],
+            { title: 'Authentication Error', description: 'An error occurred during authentication' }
+        );
+    }
+}
 
-        console.log("――――――――――――――――――――――――――――――――――――");
-        console.log('\x1b[32m%s\x1b[0m', 'Your license key is valid!');
-        console.log('\x1b[36m%s\x1b[0m', "Discord ID: " + response.data.discord_id);
-        console.log("――――――――――――――――――――――――――――――――――――");
 
+// Auth Function
+async function Auth() {
+    const authClient = new AuthClient();
+    try {
+        await authClient.validateLicense();
     } catch (error) {
-        console.log("――――――――――――――――――――――――――――――――――――");
-        console.log('\x1b[31m%s\x1b[0m', 'License Authentication failed');
-        console.log("――――――――――――――――――――――――――――――――――――");
-        console.log(error);
-        process.exit(1);
+        console.error('[AUTH]'.brightRed, 'Authentication process failed:', error.message);
+        process.exit(1); // Exit on failure
     }
 }
 

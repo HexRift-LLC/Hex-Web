@@ -1,5 +1,5 @@
-License:
- key: "" #license key
+Auth:
+  license: "" #license key
 Server:
   Name: "Hex Web" #server name
   Port: 3100  #server port

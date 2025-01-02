@@ -7,7 +7,7 @@ const yaml = require("js-yaml");
 const config = yaml.load(fs.readFileSync('./config.yml', 'utf8'));
 const sgMail = require('@sendgrid/mail');
 const colors = require("colors");
-const { Auth } = require("./app");
+const { Auth } = require("./Auth");
 
 // Enhanced authentication with retry logic
 async function authenticate(retries = 3) {
