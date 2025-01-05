@@ -1,7 +1,32 @@
-<script src="/js/main.js"></script>
 <footer>
-    <div class="container">
-        <p>&copy; <span id="currentYear"></span> <span class="logo-text"><%= title %></span></span>. All rights reserved.</p>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3><%= config.footer.company_info.title %></h3>
+            <p><%= config.footer.company_info.description %></p>
+            <div class="social-icons">
+                <% config.footer.social.forEach(social => { %>
+                    <a href="<%= social.link %>"><i class="fab <%= social.icon %>"></i></a>
+                <% }); %>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/#home" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
+                <li><a href="/#about" class="<%= path === '/#about' ? 'active' : '' %>">About</a></li>
+                <li><a href="/#services" class="<%= path === '/#services' ? 'active' : '' %>">Services</a></li>
+                <li><a href="/#contact" class="<%= path === '/#contact' ? 'active' : '' %>">Contact</a></li>
+                <li><a href="/store" class="<%= path === '/store' ? 'active' : '' %>">Store</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p><i class="fas fa-envelope"></i> <%= config.contact.info.email %></p>
+            <p><i class="fas fa-phone"></i> <%= config.contact.info.phone %></p>
+            <p><i class="fas fa-location-dot"></i> <%= config.contact.info.address %></p>
+        </div>
     </div>
-    
+    <div class="footer-bottom">
+        <p><%= config.footer.copyright %></p>
+    </div>
 </footer>

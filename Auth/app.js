@@ -1,134 +1,92 @@
 const express = require('express');
+const app = express();
 const path = require('path');
-const compression = require('compression');
-const bodyParser = require('body-parser');
+const yaml = require('js-yaml');
 const fs = require('fs');
-const yaml = require("js-yaml");
-const config = yaml.load(fs.readFileSync('./config.yml', 'utf8'));
 const sgMail = require('@sendgrid/mail');
 const colors = require("colors");
 const { Auth } = require("./Auth");
+const config = yaml.load(fs.readFileSync('./config/config.yml', 'utf8'));
 
-// Enhanced authentication with retry logic
-async function authenticate(retries = 3) {
-    for (let i = 0; i < retries; i++) {
+// Authentication function with exponential backoff
+async function authenticate(maxRetries = 3) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
             await Auth();
             console.log("[AUTH]".green, "Hex Web: Authentication successful!");
             return true;
         } catch (error) {
-            console.log("[AUTH]".yellow, `Attempt ${i + 1}/${retries} failed:`, error.message);
-            if (i === retries - 1) {
+            console.log("[AUTH]".yellow, `Attempt ${attempt}/${maxRetries} failed:`, error.message);
+            if (attempt === maxRetries) {
                 console.log("[AUTH]".brightRed, "Authentication failed after all attempts");
                 process.exit(1);
             }
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
     }
+    return false;
 }
 
-// Start the server after authentication is successful
+// Server initialization function
 async function startServer() {
-    const authenticated = await authenticate();
-    if (authenticated) {
-        const app = express();
-        const PORT = config.Server.Port || 3100;
+    // Configure express app
+    app.locals.config = config;
+    app.set('view engine', 'ejs');
+    app.use(express.static('public'));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
-        // Set your SendGrid API Key
-        sgMail.setApiKey(config.Email.SendGridToken);
+    // Routes
+    app.get('/', (req, res) => {
+        res.render('index', { path: '/' });
+    });
+    
+    app.get('/store', (req, res) => {
+        res.render('store', { path: '/store' });
+    });
+    
 
-        // Add compression for better performance
-        app.use(compression());
+    // SendGrid configuration
+    sgMail.setApiKey(config.System.api_key);
 
-        // Middleware to parse form data
-        app.use(bodyParser.urlencoded({ extended: true }));
-        app.use(bodyParser.json());
+    // Contact form handler
+    app.post('/contact', async (req, res) => {
+        const { name, email, service, message } = req.body;
+        
+        const msg = {
+            to: config.System.to_email,
+            from: config.System.from_email,
+            subject: config.System.subject,
+            html: `
+                <h2>New Contact Form Submission</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Service:</strong> ${service}</p>
+                <p><strong>Message:</strong> ${message}</p>
+            `
+        };
 
-        // Set EJS as the template engine
-        app.set('view engine', 'ejs');
-        app.set('views', path.join(__dirname, 'views'));
+        try {
+            await sgMail.send(msg);
+            res.json({ success: true });
+        } catch (error) {
+            console.error("[System]".red, "Failed to send email:", error);
+            res.status(500).json({ error: 'Failed to send email' });
+        }
+    });
 
-        // Middleware to serve static files
-        app.use(express.static(path.join(__dirname, 'public')));
-
-        // Routes
-        app.get('/', (req, res) => {
-            res.render('index', { title: config.Server.Name });
-        });
-
-        // Handle form submission
-        app.post('/submit-form', async (req, res) => {
-            const { name, email, message } = req.body;
-
-            if (!name || !email || !message) {
-                return res.status(400).json({ error: 'All fields are required' });
-            }
-
-            const msg = {
-                to: config.Email.ToEmail, // Replace with your email address
-                from: config.Email.fromEmail, // Replace with your verified SendGrid sender email
-                subject: `New Contact Form Submission from ${name}`,
-                text: `You have received a new message from ${name} (${email}):\n\n${message}`,
-            };
-
-            try {
-                await sgMail.send(msg);
-                res.status(200).json({ message: 'Email sent successfully!' });
-            } catch (error) {
-                console.error('Error sending email:', error.response ? error.response.body : error);
-                res.status(500).json({ error: 'Failed to send email. Please try again later.' });
-            }
-        });
-
-        app.get('/store', (req, res) => {
-            // Pass the title and products to the EJS template
-            res.render('store', {
-                title: config.Server.Name,
-                products: config.Store.Products // Pass the products from the YAML file
-            });
-            res.on('finish', () => {
-                res.write('<script>window.scrollTo({top: 0, behavior: "smooth"});</script>');
-            });
-        });
-        // Handle form submission
-        app.post('/submit-form', async (req, res) => {
-            const { name, email, message } = req.body;
-
-            if (!name || !email || !message) {
-                return res.status(400).json({ error: 'All fields are required' });
-            }
-
-            const msg = {
-                to: config.Email.ToEmail, // Replace with your email address
-                from: config.Email.fromEmail, // Replace with your verified SendGrid sender email
-                subject: `New Contact Form Submission from ${name}`,
-                text: `You have received a new message from ${name} (${email}):\n\n${message}`,
-            };
-
-            try {
-                await sgMail.send(msg);
-                res.status(200).json({ message: 'Email sent successfully!' });
-            } catch (error) {
-                console.error('Error sending email:', error.response ? error.response.body : error);
-                res.status(500).json({ error: 'Failed to send email. Please try again later.' });
-            }
-        });
-
-        // 404 handler
-        app.use((req, res) => {
-            res.status(404).render('error-404', { title: config.Server.Name });
-        });
-
-        // Error handler
-        app.use((err, req, res, next) => {
-            console.error(err.stack);
-            res.status(500).render('error-500', { title: config.Server.Name });
-        });
-
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
-        });
-    }
+    // Start server
+    const PORT = config.System.Port || 3000;
+    app.listen(PORT, () => {
+        console.log("[System]".green, "Hex Web:", 'is loading');
+        console.log("[System]".cyan, "Version:", `${config.System.version}`);
+        console.log("[System]".yellow, "Hex Web:", `running on port ${PORT}`);
+    });
 }
 
-startServer();
+// Initialize application with authentication
+(async () => {
+    if (await authenticate()) {
+        await startServer();
+    }
+})();

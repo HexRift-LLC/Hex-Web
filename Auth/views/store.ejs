@@ -1,37 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Leading the future of web innovation">
-    <title><%= title %> - Store </title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-</head>
-<body>
 <%- include('partials/header') %>
-<!-- Shop Page -->
-<section class="shop-page">
-    <div class="container">
-        <h2>Our Store</h2>
-        <div class="grid grid-3">
-                <!-- Loop through the products array and display each product -->
-                <% products.forEach(product => { %>
-                    <div class="product-card">
+
+<section class="store-hero">
+    <div class="section-container">
+        <h1><%= config.store.title %></h1>
+        <p class="store-description"><%= config.store.description %></p>
+    </div>
+</section>
+
+<section class="products-grid">
+    <div class="section-container">
+        <div class="products-container">
+            <% config.store.products.forEach(product => { %>
+                <div class="product-card">
+                    <div class="product-image">
                         <img src="<%= product.image %>" alt="<%= product.name %>">
-                        <h3><%= product.name %></h3>
-                        <p class="price">$<%= product.price %></p>
-                        <a href="<%= product.link %>" class="btn-primary">Buy Now</a>
                     </div>
-                <% }); %>
-            </div>
+                    <div class="product-content">
+                        <h3><%= product.name %></h3>
+                        <p class="price"><%= product.price %></p>
+                        <p class="description"><%= product.description %></p>
+                        <ul class="features">
+                            <% product.features.forEach(feature => { %>
+                                <li><i class="fas fa-check"></i> <%= feature %></li>
+                            <% }); %>
+                        </ul>
+                        <a href="<%= product.store_url %>" class="buy-button" target="_blank">
+                            Buy Now
+                        </a>
+                    </div>
+                </div>
+            <% }); %>
         </div>
-    </section>
+    </div>
+</section>
 
 <%- include('partials/footer') %>
-<script src="/js/main.js"></script>
-</body>
-</html>
-<!-- Footer -->

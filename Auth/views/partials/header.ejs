@@ -1,18 +1,37 @@
-<link rel="stylesheet" href="/css/styles.css">
-<header>
-    
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="/" class="logo">
-                <span class="logo-text">Hex<span class="accent">Web</span></span>
-            </a>
-            <ul class="menu">
-                <li><a href="/#home" class="home-link">Home</a></li>
-                <li><a href="#" class="store-link">Store</a></li>
-                <li><a href="/#about">About</a></li>
-                <li><a href="/#services">Services</a></li>
-                <li><a href="/#contact">Contact</a></li>
-            </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%= config.site.name %>">
+    <title><%= config.site.name %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta property="og:title" content="<%= config.site.description %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= config.site.url %>" />
+    <meta property="og:image" content="</images/favicon.ico" />
+    <meta property="og:description" content="<%= config.site.description %>" />
+    <meta name="theme-color" content="#FF0000">
+    <meta property="og:site_name" content="<%= config.site.name %>" />
+    <meta property="og:locale" content="en_US" />
+</head>
+<body>
+    <header>
+        <div class="hamburger">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
         </div>
-    </nav>
-</header>
+        <nav>
+            <a href="/" class="logo"><%= config.site.name %></a>
+            <ul class="nav-menu">
+                <li><a href="/#home" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
+                <li><a href="/store" class="<%= path === '/store' ? 'active' : '' %>">Store</a></li>
+                <li><a href="/#about" class="<%= path === '/#about' ? 'active' : '' %>">About</a></li>
+                <li><a href="/#services" class="<%= path === '/#services' ? 'active' : '' %>">Services</a></li>
+                <li><a href="/#contact" class="<%= path === '/#contact' ? 'active' : '' %>">Contact</a></li>
+            </ul>
+        </nav>
+    </header>

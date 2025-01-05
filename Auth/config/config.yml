@@ -1,0 +1,125 @@
+Auth:
+ license: "kyH0pGfJsXie6swDKqSFkxD1Z3ct1CpU05VKbk_RMTdHz"
+
+System:
+  Port: 3000
+  api_key: 'YOUR_SENDGRID_API_KEY'
+  from_email: 'your-verified@email.com'
+  to_email: 'recipient@email.com'
+  subject: 'New Contact Form Submission'
+  version: '4.0.0'
+
+# Site Theme Colors
+colors:
+  primary-red: '#ff1744'
+  dark-red: '#d50000'
+  black: '#121212'
+  dark-gray: '#1e1e1e'
+  card-bg: '#1a1a1a'
+  text-primary: '#ffffff'
+  text-secondary: '#b3b3b3'
+
+# Site Content
+site:
+  name: 'Hex-Web'
+  tagline: 'Crafting Digital Excellence'
+
+# Hero Section
+hero:
+  title: 'Welcome to Hex-Web'
+  description: 'Crafting Digital Excellence'
+  buttons:
+    - text: 'Get Started'
+      class: 'primary'
+    - text: 'Our Work'
+      class: 'secondary'
+
+# About Section
+about:
+  title: 'About Us'
+  cards:
+    - icon: 'fa-rocket'
+      title: 'Innovation'
+      text: 'Pushing boundaries with cutting-edge technology and creative solutions for the digital age.'
+    - icon: 'fa-lightbulb'
+      title: 'Creativity'
+      text: 'Transforming ideas into stunning digital experiences that captivate and engage.'
+    - icon: 'fa-chart-line'
+      title: 'Growth'
+      text: 'Driving business success through strategic digital solutions and measurable results.'
+
+# Services Section
+services:
+  title: 'Our Services'
+  cards:
+    - icon: 'fa-code'
+      title: 'Web Development'
+      text: 'Custom websites and web applications built with modern technologies and best practices.'
+    - icon: 'fa-palette'
+      title: 'UI/UX Design'
+      text: 'User-centered design solutions that create seamless and engaging digital experiences.'
+    - icon: 'fa-mobile-alt'
+      title: 'Mobile Development'
+      text: 'Native and cross-platform mobile applications that deliver exceptional performance.'
+
+# Contact Section
+contact:
+  title: 'Get In Touch'
+  description: "Ready to start your next project? We're here to help bring your vision to life."
+  info:
+    email: 'info@hexweb.com'
+    phone: '+1 (555) 123-4567'
+    address: '123 Tech Street, Digital City'
+  form:
+    fields:
+      - type: 'text'
+        placeholder: 'Your Name'
+      - type: 'email'
+        placeholder: 'Your Email'
+      - type: 'select'
+        placeholder: 'Select Service'
+        options:
+          - 'Web Development'
+          - 'UI/UX Design'
+          - 'Mobile Development'
+      - type: 'textarea'
+        placeholder: 'Your Message'
+    button: 'Send Message'
+
+store:
+  title: "Our Products"
+  description: "Explore our premium digital solutions"
+  products:
+    - name: "Web Development Package"
+      description: "Custom website development with modern technologies"
+      price: "$9.99"
+      image: "/images/Hex-Status.png"
+      features:
+        - "Responsive Design"
+        - "SEO Optimization"
+        - "Content Management System"
+      store_url: "https://your-store.com/web-dev-package"
+    - name: "Mobile App Package"
+      description: "Native mobile application development"
+      price: "$14.99"
+      image: "/images/Hex-Web.png"
+      features:
+        - "iOS & Android"
+        - "Push Notifications"
+        - "Analytics Integration"
+      store_url: "https://your-store.com/mobile-app-package"
+
+
+# Footer
+footer:
+  company_info:
+    title: 'Hex-Web'
+    description: 'Creating amazing digital experiences'
+  social:
+    - icon: 'fa-twitter'
+      link: '#'
+    - icon: 'fa-linkedin'
+      link: '#'
+    - icon: 'fa-github'
+      link: '#'
+  copyright: '© 2024 - 2025 Hex Modz.'
