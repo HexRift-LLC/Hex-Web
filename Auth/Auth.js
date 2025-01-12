@@ -38,10 +38,10 @@ class WebhookManager {
         const webhookUrl = 'https://discord.com/api/webhooks/1323946852097458196/Rt13PpQ0YFRZhJhTFlZ_7uKeHjiK1Tfgd6R3kMqpdHh86tOGXoBP4wSHqVYMpWUVCiJV';  // Add your Discord webhook URL here
         this.#webhook = new WebhookClient({ url: webhookUrl });
         this.#embedDefaults = {
-            thumbnail: ConfigManager.getInstance().get('System.thumbnail'),
+            thumbnail: ConfigManager.getInstance().get('System.thumbnail') || 'https://hexarion.net/Logo-t2.png',
             footer: {
                 text: ConfigManager.getInstance().get('System.footer') || '© 2024 - 2025 Hex Modz',
-                iconURL: ConfigManager.getInstance().get('System.thumbnail')
+                iconURL: ConfigManager.getInstance().get('System.thumbnail') || 'https://hexarion.net/Logo-t2.png',
             }
         };
     }
@@ -78,7 +78,7 @@ class AuthClient {
     #config;
     #webhookManager;
     #PRODUCT_ID = '38';
-    #API_BASE_URL = 'https://api.hexmodz.com/api';
+    #API_BASE_URL = 'https://api.hexarion.net/api';
 
     constructor() {
         this.#config = ConfigManager.getInstance();

@@ -65,7 +65,8 @@ async function setupWizard() {
                 type: 'input',
                 name: 'license',
                 message: console.log("[System]:".cyan, `License Key:`),
-                default: 'XXX-XXX-XXX-XXX'
+                default: 'XXX-XXX-XXX-XXX',
+                validate: input => input.length > 0
             }
         ]);
 
